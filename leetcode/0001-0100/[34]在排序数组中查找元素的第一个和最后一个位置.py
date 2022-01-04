@@ -41,19 +41,31 @@
 #  Related Topics 数组 二分查找 
 #  👍 1125 👎 0
 
-from bisect import bisect_left
-
 
 # leetcode submit region begin(Prohibit modification and deletion)
 class Solution:
-    def searchRange(self, nums: List[int], target: int) -> List[int]:   # 纯粹二分见java, go
-        loc = bisect_left(nums, target)     # 可bisect_right直接找到右侧
-        if loc < len(nums) and nums[loc] == target:
-            left = right = loc
-            while right + 1 < len(nums) and nums[right + 1] == target:
-                right += 1
-            return [left, right]
-        else:
-            return [-1, -1]
+    def searchRange(self, nums: List[int], target: int) -> List[int]:
+        ans = [-1, -1]
+        if not nums:
+            return ans
+        ans[0] = self.find(nums, target, 0, len(nums) - 1, True)
+        if ans[0] == -1:
+            return ans
+        ans[1] = self.find(nums, target, ans[0], len(nums) - 1, False)
+        return ans
+
+    def find(self, nums: List[int], target: int, start: int, end: int, equal: bool):
+        left, right = start, end
+        while left <= right:
+            mid = (left + right) >> 1
+            if nums[mid] > target or equal and nums[mid] == target:
+                right = mid - 1
+            else:
+                left = mid + 1
+        if equal:
+            if left == end + 1 or nums[left] != target:
+                return -1
+            return left
+        return right
 
 # leetcode submit region end(Prohibit modification and deletion)
