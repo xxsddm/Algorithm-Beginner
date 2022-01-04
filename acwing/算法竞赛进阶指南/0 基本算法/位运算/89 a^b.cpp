@@ -16,11 +16,7 @@ int main() {
 		return 0;
 	}
 	if (b == 0) {
-		if (p == 1) {
-			printf("%d", 0);
-		} else {
-			printf("%d", 1);
-		}
+		printf("%d", 1 % p);
 		return 0;
 	}
 	while (b) {
