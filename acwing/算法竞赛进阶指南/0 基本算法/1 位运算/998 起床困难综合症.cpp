@@ -31,15 +31,16 @@ int main() {	// DP
 		}
 	}
 	// dp考虑当前subLen位(从右往左)为0时, 更高位不变, 更低位随意设定可取得最大值
-	// 注意最低位取0时, 更低位随意设定则等价于初值为0进行操作
-	int ans = temp, combine = opt | nonOpt;
-	for (int subLen = 1, dp = nonOpt, i = 1; subLen <= length; subLen++, i <<= 1) {
+	// 注意最低位取0时, 更低位随意设定则等价于只考虑最低位的0参与运算结果, 即nonOpt最低位运算结果
+	int ans = temp;
+	for (int subLen = 1, dp = 0, i = 1; subLen <= length; subLen++, i <<= 1) {
+		dp ^= nonOpt & i;
 		if (m & i) {
 			// 考虑当前subLen位取0, 更低位随意设定的拼接情况
 			// temp的高位, dp的低位
-			ans = max(ans, (temp >> subLen << subLen) ^ (dp & (1 << subLen) - 1));
+			ans = max(ans, (temp >> subLen << subLen) ^ dp);
 		}
-		dp |= combine & i;	// 更新dp
+		dp |= opt & i;
 	}
 	printf("%d", ans);
 	return 0;
