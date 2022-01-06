@@ -37,7 +37,7 @@ int main() {
 		pair<ll, ll> loc1 = getLoc(A - 1, N), loc2 = getLoc(B - 1, N);
 		// long long 平方时会溢出
 		double dx = loc1.first - loc2.first, dy = loc1.second - loc2.second;
-		printf("%.0lf\n", sqrt((dx * dx) + (dy * dy) + 0.0001) * 5);
+		printf("%.0lf\n", sqrt(dx * dx + dy * dy) * 5);
 	}
 	return 0;
 }
