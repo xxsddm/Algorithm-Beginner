@@ -8,7 +8,7 @@ using namespace std;
 
 int N, M, T;
 
-long long count(int length, int *counter) {
+long long count(int length, int *counter) {	// 可找到不交换的点断开环
 	int mean = T / length;
 	long long ans = 0;
 	for (int i = 0; i < length; i++) {
@@ -18,14 +18,14 @@ long long count(int length, int *counter) {
 		counter[i] += counter[i - 1];
 	}
 	sort(counter, counter + length);
-	int mid = counter[length >> 1];
+	int mid = counter[length >> 1]; // 利用中位数性质
 	for (int i = 0; i < length; i++) {
 		ans += abs(counter[i] - mid);
 	}
 	return ans;
 }
 
-int main() {
+int main() {	// P34
 	scanf("%d %d %d", &N, &M, &T);
 	int counterRow[N], counterCol[M];
 	long long ans = 0;
