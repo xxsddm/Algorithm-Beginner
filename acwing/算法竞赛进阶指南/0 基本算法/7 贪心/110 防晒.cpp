@@ -7,7 +7,7 @@
 using namespace std;
 
 int main() {
-	int C, L, idx = 0, ans = 0;
+	int C, L, ans = 0;
 	cin >> C >> L;
 	bool visited[C];
 	pair<int, int> container[C], spf[L];
