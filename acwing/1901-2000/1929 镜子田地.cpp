@@ -14,9 +14,6 @@ int dfs(int row, int col, int dir) {
 	if (row < 0 || row == N || col < 0 || col == M) {
 		return 0;
 	}
-	if (visited[row][col][dir] == -1) {
-		return -1;
-	}
 	if (!visited[row][col][dir]) {
 		visited[row][col][dir] = -1;
 		int nextDir = container[row][col] == '/' ? ((5 - dir) % 4) : (3 - dir);
