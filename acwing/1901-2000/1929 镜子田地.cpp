@@ -28,7 +28,7 @@ int main() {
 	int ans = 0, temp;
 	cin >> N >> M;
 	for (int i = 0; i < N; i++) {
-		scanf("%s", &container[i]);
+		scanf("%s", container[i]);
 	}
 	memset(visited, 0, N * M * 4 * sizeof(int));
 	for (int i = 0; i < M; i++) {
