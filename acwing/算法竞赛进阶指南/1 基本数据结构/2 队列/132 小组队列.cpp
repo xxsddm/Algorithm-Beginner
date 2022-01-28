@@ -1,7 +1,7 @@
 // https://www.acwing.com/problem/content/description/134/
 
 #include "queue"
-#include "unordered_set"
+#include "cstring"
 #include "unordered_map"
 #include "iostream"
 
@@ -11,7 +11,8 @@ int main() {
 	int n, count = 1;
 	char command[8];
 	while (cin >> n && n) {
-		unordered_set<int> used;
+		bool used[n];
+		memset(used, false, sizeof(used));
 		unordered_map<int, int> id2q;
 		queue<int> container[n], q;	// 各编号相应队列, 队伍编号的队列
 		for (int i = 0; i < n; i++) {
@@ -35,15 +36,15 @@ int main() {
 				scanf("%d", &id);
 				int idxQ = id2q[id];
 				container[idxQ].push(id);
-				if (!used.count(idxQ)) {
-					used.insert(idxQ);
+				if (!used[idxQ]) {
+					used[idxQ] = true;
 					q.push(idxQ);
 				}
 			} else {
 				int idxQ = q.front(), id = container[idxQ].front();
 				container[idxQ].pop();
 				if (container[idxQ].empty()) {
-					used.erase(idxQ);
+					used[idxQ] = false;
 					q.pop();
 				}
 				printf("%d\n", id);
