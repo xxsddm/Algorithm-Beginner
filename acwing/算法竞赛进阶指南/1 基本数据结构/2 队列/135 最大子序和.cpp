@@ -8,6 +8,30 @@ using namespace std;
 int main() {
 	int n, m;
 	scanf("%d %d", &n, &m);
+	int cumsum = 0, ans = 0x80000000;
+	deque<pair<int, int>> container;	// 保存单调递增前缀和
+	container.emplace_back(0, 0);
+	for (int i = 1; i <= n; i++) {
+		if (i - container.front().second == m + 1) {
+			container.pop_front();
+		}
+		int num;
+		scanf("%d", &num);
+		cumsum += num;
+		ans = max(ans, cumsum - container.front().first);
+		while (!container.empty() && cumsum <= container.back().first) {
+			container.pop_back();
+		}
+		container.emplace_back(cumsum, i);
+	}
+	printf("%d", ans);
+	return 0;
+}
+
+/*
+int main() {
+	int n, m;
+	scanf("%d %d", &n, &m);
 	int start = 0, pre = 0, ans = 0x80000000;
 	int length = m >= n ? 1 : m, container[length];	// 备份前序元素
 	queue<int> nums;
@@ -46,3 +70,4 @@ int main() {
 	printf("%d", ans);
 	return 0;
 }
+ */
