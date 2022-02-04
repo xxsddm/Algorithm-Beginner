@@ -2,7 +2,7 @@
 
 using namespace std;
 
-int main() {	// Manacher
+int main() {	// Manacher(LeetCode 5题测试通过)
 	string input;
 	cin >> input;
 	int length = (int) input.size() * 2 + 1, idx = 0;
