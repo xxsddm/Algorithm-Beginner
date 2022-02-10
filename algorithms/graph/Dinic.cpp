@@ -1,3 +1,5 @@
+// https://www.luogu.com.cn/problem/P3376
+
 #include "queue"
 #include "cstring"
 #include "iostream"
@@ -10,13 +12,13 @@ private:
 		int to = 0, rest = 0;   // 记录边的指向点和残余流量
 	};
 
-	int idx = 0, numV = 0, start, end, *depth;
+	int idx = 0, numV = 0, start, end, *depth, *first;
 	Edge *edges;
-	vector<int> *adj, *next;
+	vector<int> *adj;
 
 	int bfs() { // BFS分层, 标记最短路径
 		memset(depth, 0, sizeof(int) * numV);
-		next = new vector<int>[numV];	// 保存相邻节点中位于下一层的部分
+		memset(first, 0, sizeof(int) * numV);	// first保存子节点访问起点, 减少dfs非残余路径访问(弧优化)
 		queue<int> q;
 		q.push(start);
 		depth[start] = 1;
@@ -28,7 +30,6 @@ private:
 				int nextNode = edge.to;
 				if (!depth[nextNode] && edge.rest) {
 					depth[nextNode] = depth[node] + 1;
-					next[node].push_back(i);
 					q.push(nextNode);
 				}
 			}
@@ -41,10 +42,14 @@ private:
 			return limit;
 		}
 		long long flow = 0;
-		for (int &i : next[node]) {
-			Edge &edge = edges[i];
-			int nextNode = edge.to, nextLimit = node == start ? edge.rest : min(limit, edge.rest);
-			int temp = dfs(nextNode, nextLimit);
+		for (int i = first[node], size = (int) adj[node].size(); i < size; i++, first[node]++) {
+			int edgeIdx = adj[node][i];
+			Edge &edge = edges[edgeIdx];
+			int nextNode = edge.to;
+			if (depth[nextNode] != depth[node] + 1) {
+				continue;
+			}
+			int nextLimit = node == start ? edge.rest : min(limit, edge.rest), temp = dfs(nextNode, nextLimit);
 			if (temp == 0) {
 				continue;
 			}
@@ -53,7 +58,7 @@ private:
 				limit -= temp;
 			}
 			edge.rest -= temp;
-			edges[i ^ 1].rest += temp;
+			edges[edgeIdx ^ 1].rest += temp;
 			if (limit == 0) {
 				break;
 			}
@@ -63,7 +68,7 @@ private:
 
 public:
 	Dinic(int V, int E, int s, int t) {
-		numV = V, start = s, end = t, depth = new int[V];
+		numV = V, start = s, end = t, depth = new int[V], first = new int[V];
 		edges = new Edge[2 * E];
 		adj = new vector<int>[V];
 	}
@@ -85,7 +90,7 @@ public:
 	}
 };
 
-int main() {	// 洛谷P3376测试通过
+int main() {
 	int n, m, s, t;
 	scanf("%d %d %d %d", &n, &m, &s, &t);
 	Dinic dinic(n, m, s - 1, t - 1);
