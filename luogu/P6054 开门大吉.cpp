@@ -105,7 +105,7 @@ int main() {	// 最小割问题, 建图
 	scanf("%d", &T);
 	while (T--) {
 		scanf("%d %d %d %d", &n, &m, &p, &y);
-		int s = n * (m + 1) + 1, t = s + 1;
+		int s = n * (m + 1), t = s + 1;
 		double c[p];
 		Dinic dinic(t + 1, s, t);
 		for (int i = 0; i < p; i++) {
