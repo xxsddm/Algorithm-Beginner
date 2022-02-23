@@ -18,19 +18,18 @@ struct com {
 void solve() {
 	int m, n, back = 0;
 	scanf("%d %d", &m, &n);
-	int nums[2][n], container[n];
-	bool used[n][n];
+	int nums[2][n], container[n], used[n][n];
 	for (int i = 0; i < n; i++) {
 		scanf("%d", &nums[back][i]);
 	}
 	sort(nums[back], nums[back] + n);
+	memset(used, 0, sizeof(used));
 	for (int i = 1; i < m; i++, back = 1 - back) {	// 路径两两合并, 保留前n小元素
 		for (int j = 0; j < n; j++) {
 			scanf("%d", &container[j]);
 		}
 		int idx = 1 - back;
 		sort(container, container + n);
-		memset(used, false, sizeof(used));
 		priority_queue<com, vector<com>, greater<>> pq;
 		pq.emplace(nums[back][0] + container[0], 0, 0);
 		for (int j = 0; j < n; j++) {
@@ -38,13 +37,14 @@ void solve() {
 			pq.pop();
 			int &idx1 = temp.idx1, &idx2 = temp.idx2, &num = temp.num;
 			nums[idx][j] = num;
-			if (idx1 + 1 < n && !used[idx1 + 1][idx2]) {
-				pq.emplace(num - nums[back][idx1] + nums[back][idx1 + 1], idx1 + 1, idx2);
-				used[idx1 + 1][idx2] = true;
+			// used记录本轮是否使用过该索引组合
+			if (idx1 + 1 < n && used[idx1 + 1][idx2] != i) {
+				pq.emplace(nums[back][idx1 + 1] + container[idx2], idx1 + 1, idx2);
+				used[idx1 + 1][idx2] = i;
 			}
-			if (idx2 + 1 < n && !used[idx1][idx2 + 1]) {
-				pq.emplace(num - container[idx2] + container[idx2 + 1], idx1, idx2 + 1);
-				used[idx1][idx2 + 1] = true;
+			if (idx2 + 1 < n && used[idx1][idx2 + 1] != i) {
+				pq.emplace(nums[back][idx1] + container[idx2 + 1], idx1, idx2 + 1);
+				used[idx1][idx2 + 1] = i;
 			}
 		}
 	}
