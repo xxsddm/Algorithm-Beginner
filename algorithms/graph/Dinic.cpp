@@ -1,5 +1,3 @@
-// https://www.luogu.com.cn/problem/P3376
-
 #include "queue"
 #include "cstring"
 #include "iostream"
@@ -90,7 +88,7 @@ public:
 	}
 };
 
-int main() {
+int main() {	// 洛谷P3376测试通过
 	int n, m, s, t;
 	scanf("%d %d %d %d", &n, &m, &s, &t);
 	Dinic dinic(n, m, s - 1, t - 1);
