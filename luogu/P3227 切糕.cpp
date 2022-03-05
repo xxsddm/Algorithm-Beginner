@@ -25,7 +25,7 @@ private:
 		queue<int> q;
 		q.push(start);
 		depth[start] = 1;
-		while (!q.empty()) {
+		while (!q.empty() && !depth[end]) {
 			int node = q.front();
 			q.pop();
 			for (int &i : adj[node]) {
