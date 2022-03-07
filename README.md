@@ -1,7 +1,7 @@
 # Algorithm Beginner
 新手上路, 自学算法和编程.
 
-这里写了一点[常用算法](https://github.com/xxsddm/algorithm-beginner/tree/master/algorithms)的实现.
+[常用算法](https://github.com/xxsddm/algorithm-beginner/tree/master/algorithms)
 
 [LeetCode](https://github.com/xxsddm/Algorithm-Beginner/tree/master/leetcode "按题号分组")
 
