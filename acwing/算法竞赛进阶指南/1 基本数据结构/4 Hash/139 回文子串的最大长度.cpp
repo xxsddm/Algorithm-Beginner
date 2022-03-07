@@ -26,10 +26,8 @@ int main() {	// Manacher
 			        && container[i - radius[i]] == container[i + radius[i]]) {	// 中心扩散
 				radius[i]++;
 			}
-			if (i + radius[i] - 1 > right) {
-				center = i;
-				right = i + radius[i] - 1;
-			}
+			center = i;
+			right = i + radius[i] - 1;
 		}
 		for (int i = 0; i < length; i++) {
 			ans = max(ans, radius[i] - 1);

@@ -11,16 +11,14 @@ int main() {
 	for (int i = 1; i <= n; i++) {
 		long long num;
 		scanf("%lld", &num);
-		long long back = num;
-		while (back) {
-			long long temp = back & -back;
-			back ^= temp;
-			if ((used & temp) == 0) {
-				ans = (ans + add * i) % mod;
-				add >>= 1;
-			}
+		long long next = num | used, diff = next ^ used;
+		while (diff) {
+			long long temp = diff & -diff;
+			diff ^= temp;
+			ans = (ans + add * i) % mod;
+			add >>= 1;
 		}
-		used |= num;
+		used = next;
 	}
 	printf("%lld", ans);
 	return 0;
