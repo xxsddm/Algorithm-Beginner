@@ -23,8 +23,10 @@ int main() {	// Manacher(LeetCode 5题测试通过)
 		        && container[i - radius[i]] == container[i + radius[i]]) {	// 中心扩散
 			radius[i]++;
 		}
-		center = i;
-		right = i + radius[i] - 1;
+		if (i + radius[i] - 1 > right) {
+			center = i;
+			right = i + radius[i] - 1;
+		}
 	}
 	for (int i = 0; i < length; i++) {
 		ans = max(ans, radius[i] - 1);
