@@ -36,7 +36,83 @@
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
 public:
-    vector<vector<int>> outerTrees(vector<vector<int>>& trees) {
+    int x0, y0;
+
+    vector<vector<int>> outerTrees(vector<vector<int>>& trees) {    // Jarvis
+        if (trees.size() <= 3) {
+            return trees;
+        }
+        vector<vector<int>> ans;
+        deque<vector<int>> container;
+        vector<int> start = trees[0];
+        for (int i = 1, size = (int) trees.size(); i < size; i++) {
+            if (start[0] > trees[i][0] || start[0] == trees[i][0] && start[1] > trees[i][1]) {
+                start = trees[i];
+            }
+        }
+        ans.push_back(start);
+        x0 = start[0], y0 = start[1];
+        for (auto &t : trees) {
+            if (t[0] != x0 || t[1] != y0) {
+                container.push_back(t);
+            }
+        }
+        bool keep = addNode(ans, container);
+        container.push_back(start);
+        while (keep) {
+            keep = addNode(ans, container);
+        }
+        return ans;
+    }
+
+    bool addNode(vector<vector<int>> &ans, deque<vector<int>> &container) {
+        vector<int> &prevNode = ans.back(), node = container.front();
+        int dx = node[0] - prevNode[0], dy = node[1] - prevNode[1], dist = dx * dx + dy * dy;
+        container.pop_front();
+        for (int i = 0, size = (int) container.size(); i < size; i++) {
+            vector<int> nextNode = container.front();
+            container.pop_front();
+            if (turnRight(prevNode, node, nextNode, dist)) {
+                container.push_back(node);
+                node = nextNode;
+            } else {
+                container.push_back(nextNode);
+            }
+        }
+        if (node[0] == x0 && node[1] == y0) {
+            return false;
+        }
+        ans.push_back(node);
+        return true;
+    }
+
+    bool turnRight(vector<int> &prevNode, vector<int> &node, vector<int> &nextNode, int &dist) {
+        int dx1 = node[0] - prevNode[0], dx2 = nextNode[0] - node[0];
+        int dy1 = node[1] - prevNode[1], dy2 = nextNode[1] - node[1];
+        if (dx1 * dy2 < dx2 * dy1) {
+            int dx3 = nextNode[0] - prevNode[0], dy3 = nextNode[1] - prevNode[1];
+            dist = dx3 * dx3 + dy3 * dy3;
+            return true;
+        }
+        if (dx1 * dy2 == dx2 * dy1) {
+            int dx3 = nextNode[0] - prevNode[0], dy3 = nextNode[1] - prevNode[1];
+            int temp = dx3 * dx3 + dy3 * dy3;
+            if (dist > temp && (nextNode[0] != x0 || nextNode[1] != y0)
+                || node[0] == x0 && node[1] == y0) {
+                dist = temp;
+                return true;
+            }
+        }
+        return false;
+    }
+};
+
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+class Solution {
+public:
+    vector<vector<int>> outerTrees(vector<vector<int>>& trees) {    // 计算余弦暴力Jarvis
         int length = (int) trees.size();
         if (length <= 3) {
             return trees;
@@ -140,5 +216,3 @@ public:
                + (vector1[1] - vector2[1]) * (vector1[1] - vector2[1]);
     }
 };
-
-//leetcode submit region end(Prohibit modification and deletion)
