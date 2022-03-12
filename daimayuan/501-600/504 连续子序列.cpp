@@ -22,7 +22,6 @@ bool lessThan(int start1, int start2, int size) {
 int main() {
 	int n;
 	scanf("%d", &n);
-	std::vector<int> prev[n];
 	nums = new int[n], next = new int[n], length = new int[n];
 	int maxLength = 1, start = n - 1;
 	for (int i = 0; i < n; i++) {
