@@ -1,93 +1,90 @@
-//给你一个字符串 s，请你将 s 分割成一些子串，使每个子串都是回文。 
+//给你一个字符串 s，请你将 s 分割成一些子串，使每个子串都是回文。
 //
-// 返回符合要求的 最少分割次数 。 
+// 返回符合要求的 最少分割次数 。
 //
-// 
-// 
-// 
 //
-// 示例 1： 
 //
-// 
+//
+//
+// 示例 1：
+//
+//
 //输入：s = "aab"
 //输出：1
 //解释：只需一次分割就可将 s 分割成 ["aa","b"] 这样两个回文子串。
-// 
 //
-// 示例 2： 
 //
-// 
+// 示例 2：
+//
+//
 //输入：s = "a"
 //输出：0
-// 
 //
-// 示例 3： 
 //
-// 
+// 示例 3：
+//
+//
 //输入：s = "ab"
 //输出：1
-// 
 //
-// 
 //
-// 提示： 
 //
-// 
-// 1 <= s.length <= 2000 
-// s 仅由小写英文字母组成 
-// 
-// 
-// 
+//
+// 提示：
+//
+//
+// 1 <= s.length <= 2000
+// s 仅由小写英文字母组成
+//
+//
+//
 // Related Topics 字符串 动态规划 👍 477 👎 0
 
 
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
 public:
-    int minCut(string s) {  // DP+BFS(枚举所有首端之后的节点以节省空间)
-        int length = (int) s.length();
-        // start -> 所有可以形成回文串的end,使[start,end]为回文串
-        // start,end -> [start,end]是否形成回文串
-        vector<vector<bool>> dp(length, vector<bool>(length));
-
-        // DP
+    int minCut(string &s) { // DP + BFS
+        int length = (int) s.size(), ans = -1;
+        vector<int> next[length];
+        bool visited[length], dp[length][length];
+        memset(visited, false, sizeof(visited));
+        memset(dp, false, sizeof(dp));
         for (int i = 0; i < length; i++) {
             dp[i][i] = true;
+            next[i].push_back(i + 1);
         }
-        for (int i = 0; i < length - 1; i++) {
-            if (s[i] == s[i + 1]) {
-                dp[i][i + 1] = true;
+        for (int i = 1; i < length; i++) {
+            if (s[i - 1] == s[i]) {
+                dp[i - 1][i] = true;
+                next[i - 1].push_back(i + 1);
             }
         }
-        for (int start = length - 3; start >= 0; start--) {
-            for (int end = start + 2; end < length; end++) {
-                if (s[start] == s[end]) {
-                    dp[start][end] = dp[start + 1][end - 1];
+        for (int left = length - 3; left >= 0; left--) {
+            for (int right = left + 2; right < length; right++) {
+                if (s[left] == s[right] && dp[left + 1][right - 1]) {
+                    dp[left][right] = true;
+                    next[left].push_back(right + 1);
                 }
             }
         }
-
-        // BFS(寻找最短路径(最少修改次数))
-        queue<int> pathQueue;
-        pathQueue.push(0);  // 从0开始
-        int count = -1;
+        queue<int> q;
+        q.push(0);
+        visited[0] = true;
         while (true) {
-            int numPath = (int) pathQueue.size();
-            count++;    // 记录走的步数,每走一段+1
-            for (int i = 0; i < numPath; i++) {
-                int start = pathQueue.front();
-                pathQueue.pop();
-                // 枚举所有可能的end节点
-                for (int end = start; end < length; end++) {
-                    if (!dp[start][end]) {
+            ans++;
+            for (int i = 0, size = (int) q.size(); i < size; i++) {
+                int node = q.front();
+                q.pop();
+                for (int &nextNode : next[node]) {
+                    if (nextNode == length) {
+                        return ans;
+                    }
+                    if (visited[nextNode]) {
                         continue;
                     }
-                    if (end == length - 1) {
-                        return count;
-                    }
-                    // 避免路径重复
-                    dp[start][end] = false;
-                    pathQueue.push(end + 1);
+                    visited[nextNode] = true;
+                    q.push(nextNode);
                 }
             }
         }
