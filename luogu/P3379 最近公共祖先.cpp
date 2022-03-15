@@ -9,9 +9,9 @@ int *lg, *depth, **anc;
 
 void dfs(int node, int prevNode, vector<int> *next) {
 	depth[node] = depth[prevNode] + 1;
-	anc[node] = new int[lg[depth[node]]];
+	anc[node] = new int[max(lg[depth[node]], 1)];
 	anc[node][0] = prevNode;
-	for (int i = 1, temp = 2, deep = depth[node]; temp <= deep; i++, temp <<= 1) {
+	for (int i = 1, limit = lg[depth[node]]; i < limit; i++) {
 		anc[node][i] = anc[anc[node][i - 1]][i - 1];
 	}
 	for (int &nextNode : next[node]) {
@@ -51,7 +51,7 @@ int main() {	// LCA(倍增)
 		next[u].push_back(v);
 		next[v].push_back(u);
 	}
-	lg[0] = 0, depth[0] = 0;
+	lg[0] = 0, depth[0] = -1;
 	// lg[i] -> log2(i) + 1
 	for (int i = 1; i <= N; i++) {
 		lg[i] = lg[i - 1] + (i == (1 << lg[i - 1]));

@@ -11,6 +11,7 @@ int main() {
 		scanf("%d", &nums[i]);
 	}
 	sort(nums, nums + 7);
+	// 解方程
 	printf("%d %d %d", nums[0], nums[1], nums[6] - nums[0] - nums[1]);
 	return 0;
 }

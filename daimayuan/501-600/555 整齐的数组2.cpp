@@ -36,7 +36,7 @@ int main() {
 			printf("-1\n");
 			continue;
 		}
-		for (int k = add << 1; k > 0; k--) {
+		for (int k = add << 1; k > 0; k--) {	// 暴力枚举
 			for (int i = 0; i < n; i++) {
 				int num = nums[i] % k;
 				if (visited[num] < round) {
