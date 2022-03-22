@@ -5,6 +5,7 @@
 
 long long *nums, *lazy;
 
+// lazy怠惰标记, lazy[node]表示传递到node(含), 但没有传递到node子节点的更新操作
 void add(int node, int start, int end, int left, int right, int delta) {
 	if (left > end || right < start) {
 		return;
