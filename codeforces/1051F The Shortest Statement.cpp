@@ -4,7 +4,6 @@
 #include "algorithm"
 #include "vector"
 #include "queue"
-#include "cstring"
 #include "iostream"
 
 using namespace std;
@@ -16,7 +15,7 @@ struct Edge {
 	}
 } *edges;
 
-int n, maxLength = 1, *root, *counter, *lg, *depth, **anc;
+int n, *root, *counter, *lg, *depth, **anc;
 long long inf = 1e18, *container, **dist;
 bool *used;
 
@@ -45,11 +44,13 @@ bool merge(int &node1, int &node2) {
 
 void dfs(int node, int prevNode, vector<pair<int, int>> *next) {
 	depth[node] = depth[prevNode] + 1;
-	anc[node] = new int[maxLength];
-	memset(anc[node], 0, sizeof(int) * maxLength);
-	anc[node][0] = prevNode;
-	for (int i = 1; i < maxLength; i++) {
-		anc[node][i] = anc[anc[node][i - 1]][i - 1];
+	int length = lg[depth[node]];
+	if (length) {
+		anc[node] = new int[length];
+		anc[node][0] = prevNode;
+		for (int i = 1, limit = length; i < limit; i++) {
+			anc[node][i] = anc[anc[node][i - 1]][i - 1];
+		}
 	}
 	for (auto &edge : next[node]) {
 		if (edge.first == prevNode) {
@@ -71,8 +72,8 @@ int lca(int u, int v) {
 	if (u == v) {
 		return u;
 	}
-	for (int i = maxLength - 1; i >= 0; i--) {
-		if (anc[u][i] != anc[v][i]) {
+	for (int i = lg[depth[u]] - 1; i >= 0; i--) {
+		if (i <= lg[depth[u]] - 1 && anc[u][i] != anc[v][i]) {
 			u = anc[u][i], v = anc[v][i];
 		}
 	}
@@ -125,9 +126,6 @@ int main() {
 		root[i] = i;
 		counter[i] = 1;
 	}
-	while ((1 << maxLength) <= n) {
-		maxLength++;
-	}
 	for (int i = 0; i < m; i++) {
 		scanf("%d %d %d", &edges[i].u, &edges[i].v, &edges[i].w);
 	}
@@ -143,12 +141,10 @@ int main() {
 	}
 	delete []root;
 	delete []counter;
-	lg[0] = 0, depth[0] = 0, container[1] = 0;
+	lg[0] = 0, depth[0] = -1, container[1] = 0;
 	for (int i = 1; i <= n; i++) {
 		lg[i] = lg[i - 1] + (1 << lg[i - 1] == i ? 1 : 0);
 	}
-	anc[0] = new int[maxLength];
-	memset(anc[0], 0, sizeof(int) * maxLength);
 	dfs(1, 0, next);
 	unordered_set<int> memo;
 	for (int &i : back) {

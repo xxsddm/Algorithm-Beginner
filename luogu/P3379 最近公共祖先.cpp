@@ -33,7 +33,7 @@ int lca(int u, int v) {
 		return u;
 	}
 	for (int i = lg[depth[u]] - 1; i >= 0; i--) {
-		if (anc[u][i] != anc[v][i]) {
+		if (i < lg[depth[u]] && anc[u][i] != anc[v][i]) {
 			u = anc[u][i], v = anc[v][i];
 		}
 	}
