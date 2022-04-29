@@ -45,7 +45,7 @@ long long mergeSort(int start, int end, std::pair<int, int> *nums) {
 	}
 }
 
-int main() {	// 区域数 = 1 + 切线数 + 切线交点数	(也可欧拉公式: R + E - V = 1)
+int main() {	// 区域数 = 1 + 切线数 + 切线交点数	(也可欧拉公式: R + V - E = 1)
 	int n, m, x, y;
 	read(n), read(m), read(x), read(y);
 	hor = new std::pair<int, int>[x];
