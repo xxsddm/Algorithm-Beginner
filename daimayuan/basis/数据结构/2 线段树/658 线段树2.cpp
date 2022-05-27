@@ -71,7 +71,7 @@ void change(int cur, int start, int end, int idx, int num) {
 }
 
 Node query(int cur, int start, int end, int left, int right) {
-	if (start == left && end == right) {
+	if (start >= left && end <= right) {
 		return nodes[cur];
 	}
 	int mid = (start + end) >> 1;
@@ -81,8 +81,8 @@ Node query(int cur, int start, int end, int left, int right) {
 	} else if (right <= mid) {
 		return query(leftnode, start, mid, left, right);
 	}
-	return query(leftnode, start, mid, left, mid)
-	       + query(rightnode, mid + 1, end, mid + 1, right);
+	return query(leftnode, start, mid, left, right)
+	       + query(rightnode, mid + 1, end, left, right);
 }
 
 int main() {
