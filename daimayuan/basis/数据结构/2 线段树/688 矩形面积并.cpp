@@ -17,6 +17,7 @@ inline void read(T &x) {
 	}
 }
 
+// 维护各区间长度, 区间最小覆盖次数及最小覆盖次数对应区间长度
 struct Node {
 	int minnum = 0, count, lazy, size;
 } *nodes;
