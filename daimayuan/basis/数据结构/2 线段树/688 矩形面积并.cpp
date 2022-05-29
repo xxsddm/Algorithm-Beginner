@@ -19,7 +19,7 @@ inline void read(T &x) {
 
 // 维护各区间长度, 区间最小覆盖次数及最小覆盖次数对应区间长度
 struct Node {
-	int minnum = 0, count, lazy, size;
+	int minnum = 0, count, lazy;
 } *nodes;
 
 void build(int cur, int start, int end, int idx, int size) {
@@ -28,7 +28,6 @@ void build(int cur, int start, int end, int idx, int size) {
 	}
 	nodes[cur].lazy = 0;
 	if (start == end) {
-		nodes[cur].size = size;
 		nodes[cur].count = size;
 		return;
 	}
@@ -36,8 +35,7 @@ void build(int cur, int start, int end, int idx, int size) {
 	int next1 = cur << 1, next2 = next1 ^ 1;
 	build(next1, start, mid, idx, size);
 	build(next2, mid + 1, end, idx, size);
-	nodes[cur].size = nodes[next1].size + nodes[next2].size;
-	nodes[cur].count = nodes[cur].size;
+	nodes[cur].count = nodes[next1].count + nodes[next2].count;
 }
 
 void change(int cur, int start, int end, int left, int right, int delta) {
@@ -96,7 +94,7 @@ int main() {
 		build(1, 1, length, i, xs[i] - xs[i - 1]);
 	}
 	long long ans = 0;
-	for (int i = 0, prevy = 0, prevsize = 0; i < total;) {
+	for (int i = 0, prevy = 0, prevsize = 0, range = xs[length] - xs[0]; i < total;) {
 		int cury = container[i][0], start, end;
 		while (i < total && container[i][0] == cury) {
 			start = std::upper_bound(xs, xs + length, container[i][1]) - xs;
@@ -105,7 +103,7 @@ int main() {
 			i++;
 		}
 		ans += (long long) prevsize * (cury - prevy);
-		prevsize = nodes[1].size;
+		prevsize = range;
 		if (nodes[1].minnum == 0) {
 			prevsize -= nodes[1].count;
 		}
