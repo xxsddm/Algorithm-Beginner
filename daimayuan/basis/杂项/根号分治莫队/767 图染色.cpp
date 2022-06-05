@@ -57,7 +57,6 @@ int main() {
 		read(u), read(v);
 		next[u].push_back(v);
 		next[v].push_back(u);
-		counter[u]++, counter[v]++;
 	}
 	for (int i = 1; i <= n; i++) {
 		if ((int) next[i].size() > size) {
