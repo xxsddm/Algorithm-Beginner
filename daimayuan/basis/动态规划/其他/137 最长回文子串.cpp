@@ -30,8 +30,8 @@ int main() {	// Manacher
 		word[idx++] = 1;
 	}
 	radius[0] = 1;
-	for (int i = 1, center = -1, right = -1; i < length; i++) {
-		if (i + radius[2 * center - i] <= right) {
+	for (int i = 1, center, right = 0; i < length; i++) {
+		if (i < right && i + radius[2 * center - i] <= right) {
 			radius[i] = radius[2 * center - i];
 			continue;
 		}
