@@ -29,7 +29,7 @@ int main() {	// 洛谷P5854测试通过
 	for (int i = 1, num; i <= n; i++) {
 		read(num);
 		int last = 0;
-		// 用当前值替换较大值, 作为被替代值所属子树的根
+		// 用当前值替换较大值, 作为被替代值所属子树的根, 单调栈维护右链
 		while (!stk.empty() && num < stk.top().second) {
 			last = stk.top().first;
 			stk.pop();
