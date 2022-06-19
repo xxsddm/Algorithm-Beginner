@@ -52,19 +52,19 @@ void dfs2(int node) {
 }
 
 int bfs(int start) {
-	queue<pair<int, int>> q;
+	queue<int> q;
 	int ans = 0;
-	q.push({start, counter[start]});
+	q.push(start);
 	node2block[start] = counter[start];
 	while (!q.empty()) {
-		auto &[idx, cumsum] = q.front();
+		int idx = q.front(), cumsum = node2block[idx];
 		ans = max(ans, cumsum);
 		q.pop();
 		for (int &nextidx : adj3[idx]) {
 			int temp = cumsum + counter[nextidx];
 			if (node2block[nextidx] < temp) {
 				node2block[nextidx] = temp;
-				q.push({nextidx, temp});
+				q.push(nextidx);
 			}
 		}
 	}
