@@ -1,119 +1,103 @@
 // https://www.luogu.com.cn/problem/P5357
 
-#include "cstring"
-#include "queue"
-#include "iostream"
+#include <cstring>
+#include <iostream>
+#include <queue>
+#include <vector>
 
-using namespace std;
+const int LEN = 2000001, TOTAL = 26, BASE = 'a';
 
-class ACautomaton {
-private:
-	struct Node {
-		int count = 0, length = 0, indegree = 0;
-		vector<int> idxs;
-		Node *fail, *next[26];
-		Node() {
-			for (int i = 0; i < 26; i++) {
-				next[i] = nullptr;
-			}
-		}
-	};
+struct Node {
+    int count = 0, indegree = 0;
+    std::vector<int> container;
+    Node *prev = nullptr, *fail = nullptr, **next;
+    Node(Node *pre = nullptr) {
+        prev = pre;
+        next = (Node **)malloc(sizeof(Node *) * TOTAL);
+        memset(next, 0, sizeof(Node *) * TOTAL);
+    }
+} *root = new Node(), *root_d = new Node();
 
-	Node *root = new Node(), *dummyhead = new Node();
+char word[LEN];
+int *counter;
+std::vector<Node *> container;
 
-public:
-	ACautomaton() {
-		root->fail = dummyhead;
-		for (int i = 0; i < 26; i++) {
-			dummyhead->next[i] = root;
-		}
-	}
+void add(int idx) {
+    Node *node = root;
+    for (int i = 0, j, length = (int)strlen(word); i < length; i++) {
+        j = word[i] - BASE;
+        if (node->next[j] == nullptr) {
+            node->next[j] = new Node(node);
+            container.push_back(node->next[j]);
+        }
+        node = node->next[j];
+    }
+    node->container.push_back(idx);
+}
 
-	vector<Node*> nodes;
+void bfs() {  // 按照字符串长度遍历, 计算fail, 则fail相应长度小于当前节点
+    root->fail = root_d;
+    for (int i = 0; i < TOTAL; i++) {
+        root_d->next[i] = root;
+    }
+    std::queue<Node *> q;
+    q.push(root);
+    while (!q.empty()) {
+        Node *node = q.front(), *curFail = node->fail;
+        q.pop();
+        for (int i = 0; i < TOTAL; i++) {  // 计算当前节点相应字符串的最长公共后缀字符串相应节点
+            if (node->next[i] == nullptr) {
+                node->next[i] = curFail->next[i];
+            } else {
+                node->next[i]->fail = curFail->next[i];
+                q.push(node->next[i]);
+            }
+        }
+    }
+}
 
-	void add(string &word, int newIdx) {
-		int length = (int) word.size();
-		Node *node = root;
-		for (int i = 0; i < length; i++) {
-			int idx = word[i] - 'a';
-			if (node->next[idx] == nullptr) {
-				node->next[idx] = new Node();
-				nodes.push_back(node->next[idx]);
-				node->next[idx]->length = node->length + 1;
-			}
-			node = node->next[idx];
-		}
-		node->idxs.push_back(newIdx);
-	}
-
-	void preprocess() {     // BFS(按照字符串长度遍历, 计算fail)
-		queue<Node*> q;
-		q.push(root);
-		while (!q.empty()) {
-			Node *node = q.front(), *prevFail = node->fail;
-			q.pop();
-			for (int i = 0; i < 26; i++) {
-				if (node->next[i] == nullptr) {
-					node->next[i] = prevFail->next[i];
-					continue;
-				}
-				node->next[i]->fail = prevFail->next[i];
-				q.push(node->next[i]);
-			}
-		}
-	}
-
-	void calculate(string &word) {
-		int length = (int) word.size();
-		Node *node = root;
-		for (int i = 0; i < length; i++) {
-			node = node->next[word[i] - 'a'];
-			node->count++;
-		}
-	}
-
-	void count(int *counter) {	// BFS(利用拓扑关系计算各字符串出现次数)
-		queue<Node*> q;
-		for (auto & node : nodes) {
-			node->fail->indegree++;
-		}
-		for (auto & node : nodes) {
-			if (node->indegree == 0) {
-				q.push(node);
-			}
-		}
-		while (!q.empty()) {
-			Node *node = q.front();
-			q.pop();
-			for (int &idx : node->idxs) {
-				counter[idx] = node->count;
-			}
-			node->fail->count += node->count;
-			if (--node->fail->indegree == 0) {
-				q.push(node->fail);
-			}
-		}
-	}
-};
+void count() {  // BFS(利用拓扑关系计算各字符串出现次数)
+    Node *temp = root;
+    for (int i = 0, j, length = (int)strlen(word); i < length; i++) {
+        j = word[i] - BASE;
+        temp = temp->next[j];
+        temp->count++;
+    }
+    for (auto &node : container) {
+        node->fail->indegree++;
+    }
+    std::queue<Node *> q;
+    for (auto &node : container) {
+        if (node->indegree == 0) {
+            q.push(node);
+        }
+    }
+    while (!q.empty()) {
+        Node *node = q.front();
+        q.pop();
+        for (int &idx : node->container) {
+            counter[idx] = node->count;
+        }
+        node->fail->count += node->count;
+        if (--node->fail->indegree == 0) {
+            q.push(node->fail);
+        }
+    }
+}
 
 int main() {
-	int n;
-	ACautomaton ac;
-	scanf("%d", &n);
-	string words[n];
-	int counter[n];
-	memset(counter, 0, sizeof(counter));
-	for (int i = 0; i < n; i++) {
-		cin >> words[i];
-		ac.add(words[i], i);
-	}
-	string word;
-	cin >> word;
-	ac.preprocess();
-	ac.calculate(word);
-	ac.count(counter);
-	for (int i = 0; i < n; i++) {
-		printf("%d\n", counter[i]);
-	}
-	return 0;
+    int T;
+    scanf("%d", &T);
+    counter = new int[T];
+    for (int t = 0; t < T; t++) {
+        scanf("%s", word);
+        add(t);
+    }
+    scanf("%s", word);
+    bfs();
+    count();
+    for (int t = 0; t < T; t++) {
+        printf("%d\n", counter[t]);
+    }
+    return 0;
 }
