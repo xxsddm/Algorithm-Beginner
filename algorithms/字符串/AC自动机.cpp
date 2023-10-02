@@ -8,9 +8,8 @@ const int LEN = 2000001, TOTAL = 26, BASE = 'a';
 struct Node {
     int count = 0, indegree = 0;
     std::vector<int> container;
-    Node *prev = nullptr, *fail = nullptr, **next;
-    Node(Node *pre = nullptr) {
-        prev = pre;
+    Node *fail = nullptr, **next;
+    Node() {
         next = (Node **)malloc(sizeof(Node *) * TOTAL);
         memset(next, 0, sizeof(Node *) * TOTAL);
     }
@@ -25,7 +24,7 @@ void add(int idx) {
     for (int i = 0, j, length = (int)strlen(word); i < length; i++) {
         j = word[i] - BASE;
         if (node->next[j] == nullptr) {
-            node->next[j] = new Node(node);
+            node->next[j] = new Node();
             container.push_back(node->next[j]);
         }
         node = node->next[j];
